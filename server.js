@@ -19,11 +19,11 @@ io.on('connection', socket => {
 
         socket.join(user.room);
 
-        socket.emit('message', formatMessage(adminName, 'Welcome to AnimeChat!'));
+        socket.emit('message', formatMessage(adminName, 'Bem vindo ao AnimeChat!'));
 
         socket.broadcast
         .to(user.room)
-        .emit('message', formatMessage(adminName, `${user.username} has joined the chat!`)
+        .emit('message', formatMessage(adminName, `${user.username} se juntou a conversa!`)
         );
 
         io.to(user.room).emit('roomUsers', {
@@ -36,8 +36,12 @@ io.on('connection', socket => {
         const user = userLeave(socket.id);
 
         if(user) {
-            io.to(user.room).emit('message', formatMessage(adminName, `${user.username} has left the chat`));
+            io.to(user.room).emit('message', formatMessage(adminName, `${user.username} saiu da conversa`));
 
+            io.to(user.room).emit("roomUsers", {
+                room: user.room,
+                users: getRoomUsers(user.room),
+            });
         }
     });
 
